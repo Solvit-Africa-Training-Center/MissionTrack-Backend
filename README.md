@@ -2,6 +2,8 @@
 
 A modern web app that streamlines employee business trip ("mission") requests by replacing paper/email processes with a transparent, efficient workflow.
 
+
+
 # Features
 Digitize Requests: Employees submit missions via a simple form (destination, purpose, dates, budget, attachments).
 
@@ -15,7 +17,10 @@ Centralized Records: All requests, approvals, and expenses stored in one searcha
 
 Analytics & Reporting: Automated insights (frequent destinations, top costs, approval timelines).
 
+
+
 👤 User Roles
+
 Employee: Submit requests, track status, upload expenses.
 
 Manager: Approve/reject with notes, set budgets.
@@ -23,6 +28,7 @@ Manager: Approve/reject with notes, set budgets.
 Finance: Monitor spending, validate expenses, export reports.
 
 Admin: Configure workflows, roles, and policies.
+
 
 🛠️ Tech Stack
 Backend
@@ -42,6 +48,8 @@ Docker & Docker Compose
 Jest + NYC for testing/coverage
 
 ESLint + Prettier for code quality
+
+
 
 ⚡ Getting Started
 
@@ -106,6 +114,7 @@ CLOUDINARY_API_KEY=your-cloudinary-api-key
 CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 
 CLOUDINARY_CLOUD_NAME=your-cloudinary-api-name
+
 
 
 To Run migrations & seeders:
