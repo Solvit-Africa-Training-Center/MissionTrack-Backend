@@ -21,7 +21,7 @@ Analytics & Reporting: Automated insights (frequent destinations, top costs, app
 
 
 
-👤 User Roles
+# User Roles
 
 Employee: Submit requests, track status, upload expenses.
 
@@ -32,7 +32,7 @@ Finance: Monitor spending, validate expenses, export reports.
 Admin: Configure workflows, roles, and policies.
 
 
-🛠️ Tech Stack
+# Tech Stack
 Backend
 
 Node.js (Express) + TypeScript
@@ -53,7 +53,7 @@ ESLint + Prettier for code quality
 
 
 
-⚡ Getting Started
+# Getting Started
 
 1. Clone the Repository
 
@@ -71,7 +71,7 @@ npm run docker:up      # start app + db + redis
 To stop:
 npm run docker:stop
 
-3. Run Backend (without Docker)
+# 3. Run Backend (without Docker)
 cd backend
 npm install
 npm run dev
@@ -120,14 +120,14 @@ CLOUDINARY_CLOUD_NAME=your-cloudinary-api-name
 
 
 
-To Run migrations & seeders:
+# To Run migrations & seeders:
 
 npm run db:migrate
 
 npm run db:seed
 
 
-🧪 Testing
+# Testing
 
 Run backend tests with coverage:
 
