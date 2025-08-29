@@ -37,7 +37,7 @@ ESLint + Prettier for code quality
 
 ⚡ Getting Started
 1. Clone the Repository
-git clone https://github.com/ikundabayoplacide/SolvitAfrica-mission-management.git
+git clone https://github.com/Solvit-Africa-Training-Center/MissionTrack-Backend.git
 cd SolvitAfrica-mission-management
 
 2. Run with Docker
