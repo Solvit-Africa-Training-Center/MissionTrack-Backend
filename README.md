@@ -19,6 +19,8 @@ Analytics & Reporting: Automated insights (frequent destinations, top costs, app
 
 
 
+
+
 👤 User Roles
 
 Employee: Submit requests, track status, upload expenses.
@@ -63,6 +65,7 @@ cd SolvitAfrica-mission-management
 Make sure you have Docker & Docker Compose installed.
 
 npm run docker:build   # build all services
+
 npm run docker:up      # start app + db + redis
 
 To stop:
