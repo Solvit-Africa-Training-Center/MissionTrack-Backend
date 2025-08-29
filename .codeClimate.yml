@@ -1,0 +1,15 @@
+version: "2"
+plugins:
+  eslint:
+    enabled: true
+    channel: "eslint-8"
+  nodesecurity:
+    enabled: true
+  fixme:
+    enabled: true
+exclude_patterns:
+  - "dist/"
+  - "node_modules/"
+  - "**/*.d.ts"
+  - "**/migrations/"
+  - "**/seeders/"

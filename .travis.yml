@@ -1,0 +1,25 @@
+language:node_js
+node_js:
+   -"18"
+   -"20"
+
+   services:
+   -postgresql
+
+   addons:
+     postgresql:"17.5"
+
+     cache:
+     directories:
+     -node_modules
+
+     before_script:
+      - psql -c 'create database mission_management_test;' -U postgres
+      - npm run build
+
+      script:
+      -npm test
+      -npm run lint
+
+      after_success:
+      -npm run coverage
