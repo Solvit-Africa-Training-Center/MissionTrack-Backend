@@ -71,7 +71,7 @@ npm run docker:up      # start app + db + redis
 To stop:
 npm run docker:stop
 
-3. Run Backend (without Docker)
+# Run Backend (without Docker)
 cd backend
 npm install
 npm run dev
@@ -120,7 +120,7 @@ CLOUDINARY_CLOUD_NAME=your-cloudinary-api-name
 
 
 
-To Run migrations & seeders:
+# To Run migrations & seeders:
 
 npm run db:migrate
 
