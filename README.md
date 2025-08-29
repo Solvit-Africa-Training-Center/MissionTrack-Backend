@@ -21,7 +21,7 @@ Analytics & Reporting: Automated insights (frequent destinations, top costs, app
 
 
 
-👤 User Roles
+# User Roles
 
 Employee: Submit requests, track status, upload expenses.
 
@@ -32,7 +32,7 @@ Finance: Monitor spending, validate expenses, export reports.
 Admin: Configure workflows, roles, and policies.
 
 
-🛠️ Tech Stack
+# Tech Stack
 Backend
 
 Node.js (Express) + TypeScript
@@ -53,7 +53,7 @@ ESLint + Prettier for code quality
 
 
 
-⚡ Getting Started
+# Getting Started
 
 1. Clone the Repository
 
@@ -127,7 +127,7 @@ npm run db:migrate
 npm run db:seed
 
 
-🧪 Testing
+# Testing
 
 Run backend tests with coverage:
 
