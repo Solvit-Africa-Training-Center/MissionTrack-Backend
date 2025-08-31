@@ -4,6 +4,7 @@ import redis from './utils/redis';
 import { errorLogger, logStartup } from './utils/logger';
 import { database } from './database';
 import i18n from './config/i18n';
+import { routers } from './routes';
 
 config();
 
@@ -15,8 +16,10 @@ const app=express();
 
 app.use(express.json());
 app.use(i18n.init);
+
+app.use(routers);
 redis.connect().catch((err)=>console.log("Redis connection error",err));
-const PORT=parseInt(process.env.PORT as string)||5500;
+const PORT=parseInt(process.env.PORT as string)||5000;
 
 database.authenticate().then(async()=>{
     try{
