@@ -5,6 +5,7 @@ import { errorLogger, logStartup } from './utils/logger';
 import { database } from './database';
 import i18n from './config/i18n';
 import { routers } from './routes';
+import { setupSwagger } from './swagger/swagger';
 
 config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(i18n.init);
 
 app.use(routers);
+setupSwagger(app);
 redis.connect().catch((err)=>console.log("Redis connection error",err));
 const PORT=parseInt(process.env.PORT as string)||5000;
 

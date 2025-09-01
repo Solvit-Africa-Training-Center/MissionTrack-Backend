@@ -13,7 +13,7 @@ interface userAttributes{
     is_active?:boolean;
     createdAt?:Date;
     updatedAt?:Date;
-    DeletedAt?:Date|null;
+    deletedAt?:Date|null;
 }
 
 export interface userCreationAttributes extends Omit <userAttributes, "id"  | "createdAt"| "updatedAt">{
@@ -37,7 +37,7 @@ export class User extends Model<userAttributes,userCreationAttributes> implement
     public department?: string | undefined;
     public createdAt?: Date;
     public updatedAt?: Date;
-    public DeletedAt?: null | undefined;
+    public deletedAt?: null | undefined;
 
 
     public toJSON(): object | userAttributes{
@@ -107,7 +107,7 @@ User.init(
             allowNull:false,
             defaultValue:DataTypes.NOW,
         },
-        DeletedAt:{
+        deletedAt:{
             type:DataTypes.DATE,
             allowNull:true,
         }
@@ -117,14 +117,7 @@ User.init(
         tableName:"users",
         paranoid:true,
         timestamps:true,
-        // underscored:true,
         modelName:"User",
-        indexes:[
-            {
-                unique:true,
-                fields:["email","id"]
-            }
-        ]
     }
 )
 return User;

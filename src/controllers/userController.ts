@@ -101,7 +101,7 @@ export const updateUser=async(req:IRequestUserData,res:Response)=>{
         const id=req.params.id;
         const updateData=req.body;
         const affectedCount=await UserService.updateUser(id,updateData);
-        if(affectedCount===0 || !affectedCount){
+        if(!affectedCount){
             return ResponseService({
                 data:null,
                 status:404,

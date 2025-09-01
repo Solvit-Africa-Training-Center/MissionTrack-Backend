@@ -31,12 +31,16 @@ export class UserService {
             throw error;
         }
     }
-    static async updateUser(id: string, updateData: Partial<userInterface>): Promise<number> {
+    static async updateUser(id: string, updateData: Partial<userInterface>): Promise<userInterface> {
         try {
-            const [affectedCount] = await User.update(updateData, {
-                where: { id }
+            const [affectedCount,updatedUser] = await User.update(updateData, {
+                where: { id },
+                returning:true
             });
-            return affectedCount;
+            if (affectedCount===0){
+                throw new Error(`User with id ${id} not found`);
+            };
+            return updatedUser[0].toJSON() as userInterface;
         } catch (error) {
             throw error;
         }

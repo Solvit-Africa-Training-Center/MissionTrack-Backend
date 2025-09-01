@@ -1,0 +1,167 @@
+paths:
+  /users:
+    get:
+      summary: Get all users
+      tags: [Users]
+      responses:
+        "200":
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      summary: Create a new user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+
+    patch:
+      summary: Update a user
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    delete:
+      summary: Delete a user
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: User deleted successfully
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: af4357d9-72a9-45d7-a288-4fcfbb59fc9a
+        fullName:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john@example.com
+        phoneNumber:
+          type: string
+          example: "0788888888"
+        department:
+          type: string
+          example: IT
+        role:
+          type: string
+          example: employee
+        is_active:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    UserInput:
+      type: object
+      required: [fullName, email, password, role]
+      properties:
+        fullName:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john@example.com
+        password:
+          type: string
+          example: test123
+        phoneNumber:
+          type: string
+          example: "0788888888"
+        department:
+          type: string
+          example: IT
+        role:
+          type: string
+          example: employee
+    UserUpdate:
+      type: object
+      properties:
+        fullName:
+          type: string
+          example: Updated John
+        email:
+          type: string
+          example: updated@example.com
+        phoneNumber:
+          type: string
+          example: "0712345678"
+        department:
+          type: string
+          example: Sales
+        role:
+          type: string
+          example: manager
+        is_active:
+          type: boolean
+          example: false
