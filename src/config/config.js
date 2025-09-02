@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const dotenv = require('dotenv');
 dotenv.config();
 const getPrefix = () => {
@@ -12,6 +11,7 @@ const getPrefix = () => {
 
 const databaseConfig = () => {
   const env = getPrefix();
+  
   return {
     username: process.env[`${env}_USERNAME`] || '',
     database: process.env[`${env}_DATABASE`] || '',

@@ -1,0 +1,53 @@
+paths:
+  /api/users/login:
+    post:
+      summary: User login
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        401:
+          description: Invalid email or password
+        403:
+          description: Account is deactivated
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  /api/users/logout:
+    post:
+      summary: User logout
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Logout successful
+                  data:
+                    type: null
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          description: Internal server error
