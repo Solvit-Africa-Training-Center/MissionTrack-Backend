@@ -133,4 +133,8 @@ Run backend tests with coverage:
 
 npm test
 
+# Maintainability
+[![Maintainability](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MissionTrack-Backend/maintainability.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MissionTrack-Backend)
 
+# Code Coverage
+[![Code Coverage](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MissionTrack-Backend/coverage.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MissionTrack-Backend)
