@@ -1,8 +1,6 @@
 import { config } from 'dotenv';
 import {createClient} from 'redis';
-import { Config } from 'sequelize';
 import { logger } from './logger';
-import { error, log } from 'console';
 
 
 config();
