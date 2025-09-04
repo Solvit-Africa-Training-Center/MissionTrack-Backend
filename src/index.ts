@@ -5,7 +5,7 @@ import { errorLogger, logStartup } from './utils/logger';
 import { database } from './database';
 import i18n from './config/i18n';
 import userRoutes from './routes/userRoutes';
-import swaggerDocs from './swagger'; // Make sure this import is correct
+import swaggerDocs from './swagger';
 
 config();
 
@@ -13,7 +13,12 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(i18n.init);
+
+// i18n middleware with proper typing
+app.use((req: any, res: any, next: any) => {
+  i18n.init(req, res);
+  next();
+});
 
 // Connect to Redis
 redis.connect().catch((err) => console.log("Redis connection error", err));

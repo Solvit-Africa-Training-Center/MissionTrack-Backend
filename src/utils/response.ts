@@ -21,6 +21,7 @@ export const ResponseService = <T>({
   return res.status(status).json({
     data,
     message,
+    status,
     success,
   });
 };
