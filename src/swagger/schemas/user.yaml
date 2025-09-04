@@ -1,0 +1,99 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: af4357d9-72a9-45d7-a288-4fcfbb59fc9a
+        fullName:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        role:
+          type: string
+          enum: [Employee, Manager, Finance, Admin]
+          example: Employee
+        department:
+          type: string
+          example: Engineering
+        phone:
+          type: string
+          example: +1234567890
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    
+    UserInput:
+      type: object
+      required: [fullName, email, password, role]
+      properties:
+        fullName:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          example: securePassword123
+        role:
+          type: string
+          enum: [Employee, Manager, Finance, Admin]
+          example: Employee
+        department:
+          type: string
+          example: Engineering
+        phone:
+          type: string
+          example: +1234567890
+        isActive:
+          type: boolean
+          example: true
+    
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          example: yourpassword123
+    
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT token for authentication
+        user:
+          $ref: '#/components/schemas/User'
+    
+    PasswordUpdateRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          format: password
+          example: currentPassword123
+        newPassword:
+          type: string
+          format: password
+          example: newSecurePassword456
