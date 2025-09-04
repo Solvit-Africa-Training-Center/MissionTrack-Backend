@@ -50,7 +50,10 @@ export class UserService {
 
             const deleteUser = await User.destroy({
                 where: { id }
-            })
+            });
+            if(deleteUser===0){
+                throw new Error(`User with id ${id} not found`);
+            }
             return deleteUser;
 
         } catch (error) {

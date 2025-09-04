@@ -18,7 +18,6 @@ interface userAttributes{
 
 export interface userCreationAttributes extends Omit <userAttributes, "id"  | "createdAt"| "updatedAt">{
     id?:string;
-    deletedAt?:null;
     createdAt?:Date;
     updatedAt?:Date;
 }

@@ -1,0 +1,359 @@
+paths:
+  /missions:
+    get:
+      summary: Get all missions
+      tags: [Missions]
+      responses:
+        "200":
+          description: List of missions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Mission"
+
+    post:
+      summary: Create a new mission with budget and documents
+      tags: [Missions]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - location
+                - jobPosition
+                - status
+                - estimatedTransportCost
+                - estimatedAccommodationCost
+                - estimatedMealCost
+                - totalAmount
+              properties:
+                title:
+                  type: string
+                  example: "Business Trip to Nairobi"
+                description:
+                  type: string
+                  example: "Attending client meetings and conferences"
+                location:
+                  type: string
+                  example: "Nairobi, Kenya"
+                jobPosition:
+                  type: string
+                  example: "Software Engineer"
+                status:
+                  type: string
+                  enum: [PENDING, APPROVED, REJECTED, COMPLETED]
+                  example: "PENDING"
+                estimatedTransportCost:
+                  type: number
+                  format: float
+                  example: 500
+                estimatedAccommodationCost:
+                  type: number
+                  format: float
+                  example: 800
+                estimatedMealCost:
+                  type: number
+                  format: float
+                  example: 300
+                totalAmount:
+                  type: number
+                  format: float
+                  example: 1600
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: "Upload multiple document files"
+                documentNames:
+                  type: array
+                  items:
+                    type: string
+                  description: "Names corresponding to each uploaded document"
+                  example: ["Flight Ticket", "Hotel Reservation", "Conference Registration"]
+      responses:
+        "201":
+          description: Mission created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mission created successfully"
+                  data:
+                    $ref: "#/components/schemas/Mission"
+        "400":
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Validation error"
+                  errors:
+                    type: array
+                    items:
+                      type: string
+
+  /missions/{id}:
+    get:
+      summary: Get a mission by ID
+      tags: [Missions]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Mission ID
+      responses:
+        "200":
+          description: Mission found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/Mission"
+        "404":
+          description: Mission not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Mission not found"
+
+    patch:
+      summary: Update a mission by ID
+      tags: [Missions]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Mission ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Business Trip to Nairobi"
+                description:
+                  type: string
+                  example: "Attending client meetings and conferences"
+                location:
+                  type: string
+                  example: "Nairobi, Kenya"
+                jobPosition:
+                  type: string
+                  example: "Software Engineer"
+                status:
+                  type: string
+                  enum: [PENDING, APPROVED, REJECTED, COMPLETED]
+                  example: "PENDING"
+                estimatedTransportCost:
+                  type: number
+                  format: float
+                  example: 500
+                estimatedAccommodationCost:
+                  type: number
+                  format: float
+                  example: 800
+                estimatedMealCost:
+                  type: number
+                  format: float
+                  example: 300
+                totalAmount:
+                  type: number
+                  format: float
+                  example: 1600
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: "Upload multiple document files (optional)"
+                documentNames:
+                  type: array
+                  items:
+                    type: string
+                  description: "Names corresponding to each uploaded document"
+      responses:
+        "200":
+          description: Mission updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mission updated successfully"
+                  data:
+                    $ref: "#/components/schemas/Mission"
+        "400":
+          description: Bad request - validation error
+        "404":
+          description: Mission not found
+
+    delete:
+      summary: Delete a mission by ID
+      tags: [Missions]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Mission ID
+      responses:
+        "200":
+          description: Mission deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mission deleted successfully"
+        "404":
+          description: Mission not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Mission not found"
+
+components:
+  schemas:
+    Mission:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "uuid-1234"
+        title:
+          type: string
+          example: "Business Trip to Nairobi"
+        description:
+          type: string
+          example: "Attending client meetings and conferences"
+        location:
+          type: string
+          example: "Nairobi, Kenya"
+        jobPosition:
+          type: string
+          example: "Software Engineer"
+        status:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED, COMPLETED]
+          example: "PENDING"
+        budget:
+          $ref: "#/components/schemas/Budget"
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-10-15T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-10-15T10:30:00Z"
+
+    Budget:
+      type: object
+      properties:
+        estimatedTransportCost:
+          type: number
+          format: float
+          example: 500
+        estimatedAccommodationCost:
+          type: number
+          format: float
+          example: 800
+        estimatedMealCost:
+          type: number
+          format: float
+          example: 300
+        totalAmount:
+          type: number
+          format: float
+          example: 1600
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "doc-uuid-5678"
+        documentName:
+          type: string
+          example: "Flight Ticket"
+        documentUrl:
+          type: string
+          format: uri
+          example: "https://api.example.com/documents/doc-uuid-5678"
+        uploadedAt:
+          type: string
+          format: date-time
+          example: "2023-10-15T10:30:00Z"
+        fileSize:
+          type: number
+          description: "File size in bytes"
+          example: 2048576
+        mimeType:
+          type: string
+          example: "application/pdf"
