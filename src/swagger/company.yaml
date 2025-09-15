@@ -1,0 +1,446 @@
+paths:
+  /company/register:
+    post:
+      summary: Register a new company with manager
+      tags: [Companies]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - companyName
+                - companyEmail
+                - proofDocument
+                - companyContact
+                - district
+                - province
+                - sector
+                - fullName
+                - email
+                - password
+              properties:
+                companyName:
+                  type: string
+                  example: "Tech Solutions Ltd"
+                  description: "Company name"
+                companyEmail:
+                  type: string
+                  format: email
+                  example: "info@techsolutions.com"
+                  description: "Company email address"
+                proofDocument:
+                  type: string
+                  format: binary
+                  description: "Company proof document file upload (PDF, DOC, DOCX, JPG, PNG - Max 10MB)"
+                companyContact:
+                  type: string
+                  example: "+250788123456"
+                  description: "Company contact/phone number"
+                district:
+                  type: string
+                  example: "Gasabo"
+                  description: "Company district (required)"
+                province:
+                  type: string
+                  example: "Kigali"
+                  description: "Company province "
+                sector:
+                  type: string
+                  example: "Technology"
+                  description: "Company sector "
+                fullName:
+                  type: string
+                  example: "John Doe"
+                  description: "Manager's full name"
+                email:
+                  type: string
+                  format: email
+                  example: "john.doe@techsolutions.com"
+                  description: "Manager's email address"
+                password:
+                  type: string
+                  format: password
+                  example: "SecurePassword123"
+                  description: "Manager's password"
+                phoneNumber:
+                  type: string
+                  example: "0788888888"
+                  description: "Manager's phone number (optional)"
+                department:
+                  type: string
+                  example: "Management"
+                  description: "Manager's department (optional)"
+            encoding:
+              proofDocument:
+                contentType: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/jpeg, image/png
+      responses:
+        "201":
+          description: Company and manager created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+        "400":
+          description: Bad request - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /company/{companyId}:
+    get:
+      summary: Get a company by ID
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Company ID
+      responses:
+        "200":
+          description: Company retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+        "404":
+          description: Company not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      summary: Update a company by ID (with optional proofDocument upload)
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                companyName:
+                  type: string
+                  example: "Updated Tech Solutions Ltd"
+                companyEmail:
+                  type: string
+                  format: email
+                  example: "newemail@techsolutions.com"
+                proofDocument:
+                  type: string
+                  format: binary
+                  description: "Updated proof document"
+                companyContact:
+                  type: string
+                  example: "+250788654321"
+                status:
+                  type: string
+                  enum: [pending, approved, rejected]
+                  example: "approved"
+                state:
+                  type: string
+                  enum: [active, inactive]
+                  example: "active"
+                province:
+                  type: string
+                  example: "Northern Province"
+                district:
+                  type: string
+                  example: "Musanze"
+                sector:
+                  type: string
+                  example: "IT Services"
+            encoding:
+              proofDocument:
+                contentType: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/jpeg, image/png
+      responses:
+        "200":
+          description: Company updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+        "404":
+          description: Company not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: Delete a company by ID 
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Company deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Company not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /company/allCompanies:
+    get:
+      summary: Get all companies
+      tags: [Companies]
+      responses:
+        "200":
+          description: All companies fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "All companies fetched successfully"
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Company"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /company/block/{companyId}:
+    patch:
+      summary: Block or unblock a company by ID
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum: [active, inactive]
+                  example: "inactive"
+                comment:
+                  type: string
+                  example: "Violation of terms"
+      responses:
+        "200":
+          description: Company state updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+        "404":
+          description: Company not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /company/approveReject/{companyId}:
+    patch:
+      summary: Approve or reject a company by ID
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [approved, rejected]
+                  example: "approved"
+                comment:
+                  type: string
+                  example: "All documents verified"
+      responses:
+        "200":
+          description: Company approval status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+        "404":
+          description: Company not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyName:
+          type: string
+        companyEmail:
+          type: string
+        proofDocument:
+          type: string
+        companyContact:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        state:
+          type: string
+          enum: [active, inactive]
+          nullable: true
+        province:
+          type: string
+          nullable: true
+        district:
+          type: string
+        sector:
+          type: string
+          nullable: true
+        approveComment:
+          type: string
+          nullable: true
+        blockUnblockComment:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    CompanyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Company fetched successfully"
+        status:
+          type: integer
+          example: 200
+        data:
+          $ref: "#/components/schemas/Company"
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Company deleted successfully"
+        status:
+          type: integer
+          example: 200
+        data:
+          type: "null"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Internal server error"
+        status:
+          type: integer
+          example: 500
+        data:
+          type: "null"

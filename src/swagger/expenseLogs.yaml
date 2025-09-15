@@ -1,0 +1,339 @@
+
+tags:
+  - name: ExpenseLogs
+    description: Operations related to daily expense logs
+
+paths:
+  /expenselog:
+    post:
+      tags:
+        - ExpenseLogs
+      summary: Create a new expense log
+      description: Create a new expense log with accommodation, meals, and transport receipts
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - missionId
+                - date
+                - userId
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  description: ID of the user creating the expense log
+                  example: "550e8400-e29b-41d4-a716-446655440000"
+                missionId:
+                  type: string
+                  format: uuid
+                  description: ID of the mission this expense log belongs to
+                  example: "550e8400-e29b-41d4-a716-446655440000"
+                date:
+                  type: string
+                  format: date
+                  description: Date of expenses
+                  example: "2024-01-15"
+                accommodationFile:
+                  type: string
+                  format: binary
+                  description: Upload accommodation receipt file
+                mealsFile:
+                  type: string
+                  format: binary
+                  description: Upload meals receipt file
+                transportFile:
+                  type: string
+                  format: binary
+                  description: Upload transport receipt file
+                description:
+                  type: string
+                  description: Additional description of expenses
+                  example: "Daily expenses for business trip"
+      responses:
+        '201':
+          description: Expense log created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /expenselogs:
+    get:
+      tags:
+        - ExpenseLogs
+      summary: Get all expense logs
+      responses:
+        '200':
+          description: All expense logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  /expenselog/{id}:
+    get:
+      tags:
+        - ExpenseLogs
+      summary: Get an expense log by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Expense log ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Expense log retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Expense log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      tags:
+        - ExpenseLogs
+      summary: Update an expense log by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Expense log ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                accommodationFile:
+                  type: string
+                  format: binary
+                  description: Upload new accommodation receipt file
+                mealsFile:
+                  type: string
+                  format: binary
+                  description: Upload new meals receipt file
+                transportFile:
+                  type: string
+                  format: binary
+                  description: Upload new transport receipt file
+                description:
+                  type: string
+                  description: Updated description of expenses
+                  example: "Updated expense description"
+                
+      responses:
+        '200':
+          description: Expense log updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Expense log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - ExpenseLogs
+      summary: Delete an expense log by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Expense log ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Expense log deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Expense log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  /expenselogs/mission/{missionId}:
+    get:
+      tags:
+        - ExpenseLogs
+      summary: Get expense logs by mission ID
+      parameters:
+        - name: missionId
+          in: path
+          required: true
+          description: Mission ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Expense logs for mission retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ExpenseLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        userId:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        missionId:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        accommodationCost:
+          type: number
+          format: float
+          example: 150.00
+        mealsCost:
+          type: number
+          format: float
+          example: 45.50
+        transportCost:
+          type: number
+          format: float
+          example: 25.00
+        totalCost:
+          type: number
+          format: float
+          example: 220.50
+        accommodationFile:
+          type: string
+          example: "/uploads/expense-logs/accommodation-receipt-123.pdf"
+          description: Path to accommodation receipt file
+        mealsFile:
+          type: string
+          example: "/uploads/expense-logs/meals-receipt-456.pdf"
+          description: Path to meals receipt file
+        transportFile:
+          type: string
+          example: "/uploads/expense-logs/transport-receipt-789.pdf"
+          description: Path to transport receipt file
+        description:
+          type: string
+          example: "Daily expenses for business trip"
+        date:
+          type: string
+          format: date
+          example: "2024-01-15"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation completed successfully"
+        status:
+          type: integer
+          example: 200
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/ExpenseLog'
+            - type: array
+              items:
+                $ref: '#/components/schemas/ExpenseLog'
+            - type: object
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Internal server error"
+        status:
+          type: integer
+          example: 500
+        data:
+          type: null
+

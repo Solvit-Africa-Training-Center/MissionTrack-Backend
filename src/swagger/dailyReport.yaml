@@ -1,0 +1,280 @@
+# Daily Reports API Documentation
+tags:
+  - name: Daily Reports
+    description: Operations related to daily mission reports
+
+paths:
+  /reports/:
+    post:
+      tags:
+        - Daily Reports
+      summary: Create a new daily report
+      description: Create a new daily report with optional file attachment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  description: UUID of the user creating the report
+                  example: "550e8400-e29b-41d4-a716-446655440000"
+                missionId:
+                  type: string
+                  format: uuid
+                  description: UUID of the mission
+                  example: "550e8400-e29b-41d4-a716-446655440000"
+                date:
+                  type: string
+                  format: date
+                  description: Date of the report (YYYY-MM-DD)
+                  example: "2023-10-15"
+                dailyActivity:
+                  type: string
+                  description: Description of daily activities
+                  example: "Attended client meeting and discussed project requirements"
+                description:
+                  type: string
+                  description: Additional notes or description
+                  example: "Productive meeting with potential new client"
+                document:
+                  type: string
+                  format: binary
+                  description: Optional document attachment (PDF, images, documents)
+      responses:
+        '201':
+          description: Daily report created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyReport'
+        '400':
+          description: Bad request - invalid input or file type
+        '500':
+          description: Internal server error
+
+    get:
+      tags:
+        - Daily Reports
+      summary: Get all daily reports
+      description: Retrieve all daily reports from the system
+      responses:
+        '200':
+          description: List of daily reports retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyReport'
+        '500':
+          description: Internal server error
+
+  /reports/mission/{missionId}:
+    get:
+      tags:
+        - Daily Reports
+      summary: Get daily reports by mission ID
+      description: Retrieve all daily reports for a specific mission
+      parameters:
+        - name: missionId
+          in: path
+          required: true
+          description: UUID of the mission
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Daily reports retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyReport'
+        '404':
+          description: Mission not found
+        '500':
+          description: Internal server error
+
+  /reports/{id}:
+    get:
+      tags:
+        - Daily Reports
+      summary: Get a specific daily report
+      description: Retrieve a daily report by its UUID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the daily report
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Daily report retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyReport'
+        '404':
+          description: Daily report not found
+        '500':
+          description: Internal server error
+
+    patch:
+      tags:
+        - Daily Reports
+      summary: Update a daily report
+      description: Update an existing daily report with optional file attachment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the daily report to update
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date of the report (YYYY-MM-DD)
+                  example: "2023-10-15"
+                dailyActivity:
+                  type: string
+                  description: Description of daily activities
+                  example: "Updated activity description"
+                description:
+                  type: string
+                  description: Additional notes or description
+                  example: "Updated notes"
+                document:
+                  type: string
+                  format: binary
+                  description: Optional document attachment (PDF, images, documents)
+      responses:
+        '200':
+          description: Daily report updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyReport'
+        '404':
+          description: Daily report not found
+        '400':
+          description: Bad request - invalid input or file type
+        '500':
+          description: Internal server error
+
+    delete:
+      tags:
+        - Daily Reports
+      summary: Delete a daily report
+      description: Delete a daily report by its UUID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the daily report to delete
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Daily report deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Daily Report deleted successfully"
+                  data:
+                    type: null
+        '404':
+          description: Daily report not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    DailyReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the daily report
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        missionId:
+          type: string
+          format: uuid
+          description: UUID of the associated mission
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        date:
+          type: string
+          format: date
+          description: Date of the report
+          example: "2023-10-15"
+        dailyActivity:
+          type: string
+          description: Description of daily activities
+          example: "Attended client meeting and discussed project requirements"
+        documents:
+          type: string
+          description: Name of the uploaded document
+          example: "meeting_notes.pdf"
+        filePath:
+          type: string
+          description: Path to the uploaded file
+          example: "uploads/daily-reports/meeting_notes-123456789.pdf"
+        description:
+          type: string
+          description: Additional notes or description
+          example: "Productive meeting with potential new client"
+        createdAt:
+          type: string
+          format: date-time
+          description: When the report was created
+          example: "2023-10-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the report was last updated
+          example: "2023-10-15T14:45:00.000Z"
+      required:
+        - missionId
+        - date
+        - dailyActivity
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Error message description"
+        data:
+          type: null
