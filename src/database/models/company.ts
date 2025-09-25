@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { database } from "..";
+import { sequelize } from "..";
 import { CompanyAttributes } from "../../types/companyInterface";
 import { User } from "./users";
 
@@ -95,7 +95,7 @@ Company.init({
         defaultValue: null
     }
 }, {
-    sequelize: database,
+    sequelize,
     tableName: 'companies',
     timestamps: true,
     paranoid: false

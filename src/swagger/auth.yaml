@@ -1,0 +1,223 @@
+openapi: 3.0.0
+tags:
+  - name: Authentication
+    description: Endpoints for login, logout, password reset, etc.
+
+paths:
+  /users/login:
+    post:
+      tags: [Authentication]
+      summary: User Login
+      description: Authenticate a user and return a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        "401":
+          description: Invalid credentials
+
+  /users/logout:
+    post:
+      tags: [Authentication]
+      summary: Logout User
+      description: Invalidate the JWT by blacklisting it in Redis.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully logged out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "400":
+          description: No token provided
+
+  /users/forgotPassword:
+    post:
+      tags: [Authentication]
+      summary: Forgot Password
+      description: Generate a password reset token and send it via email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        "200":
+          description: Password reset token sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForgotPasswordResponse'
+
+  /users/resetPassword:
+    post:
+      tags: [Authentication]
+      summary: Reset Password
+      description: Reset password using the provided token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        "200":
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "400":
+          description: Invalid or expired token
+
+  /users/changePassword:
+    post:
+      tags: [Authentication]
+      summary: Change Password
+      description: Authenticated user changes their password.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        "200":
+          description: Password updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "401":
+          description: Current password incorrect
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: user@example.com
+        password:
+          type: string
+          example: password123
+
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Login successful
+        data:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "1"
+                fullName:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  example: "user@example.com"
+                role:
+                  type: string
+                  example: "employee"
+                companyId:
+                  type: string
+                  example: "101"
+                department:
+                  type: string
+                  example: "Finance"
+                phone:
+                  type: string
+                  example: "+250789000000"
+
+    ForgotPasswordRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          example: user@example.com
+
+    ForgotPasswordResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Password reset token sent to Email
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR...
+
+    ResetPasswordRequest:
+      type: object
+      required: [token, newPassword, confirmPassword]
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR...
+        newPassword:
+          type: string
+          example: newStrongPass123
+        confirmPassword:
+          type: string
+          example: newStrongPass123
+
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          example: oldPass123
+        newPassword:
+          type: string
+          example: newStrongPass123
+
+    GenericResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Operation completed successfully
+
+

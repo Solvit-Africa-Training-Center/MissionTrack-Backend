@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import { database } from '..';
+import { sequelize } from "..";
 
 interface ExpenseLogAttributes {
   id: string;
@@ -91,7 +91,7 @@ ExpenseLog.init(
     },
   },
   {
-    sequelize:database,
+    sequelize,
     tableName: 'expenseLogs',
     modelName: 'expenseLog',
     paranoid: false,

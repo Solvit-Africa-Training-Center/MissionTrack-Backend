@@ -20,4 +20,9 @@ export interface userInterface{
     createdAt?:Date;
     updatedAt?:Date;
 }
+export interface userUpateInterface{
+    department?:string,
+    role?:string,
+    fullName?:string
+}
 export type AddUserInterface = Omit<userInterface, 'id' | 'createdAt' | 'updatedAt'>;

@@ -1,5 +1,5 @@
 import { Sequelize, Model, DataTypes } from "sequelize";
-import { database } from "..";
+import { sequelize } from "..";
 import { missionInterfaces, MissionStatus } from "../../types/missionInfoInterface";
 
 export interface missionCreationAttributes extends Omit<missionInterfaces, "id" | "createdAt" | "updatedAt"> {
@@ -108,7 +108,7 @@ export interface missionCreationAttributes extends Omit<missionInterfaces, "id" 
             }
         },
         {
-            sequelize: database,
+            sequelize,
             tableName: "missions",
             timestamps: true,
             paranoid: false,

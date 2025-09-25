@@ -1,6 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import { missionDocuments } from "../../types/missionDocuments";
-import { database } from "..";
+import { sequelize } from "..";
 
 
 export interface missionDoc extends Omit<missionDocuments, "id" | "createdAt" | "updatedAt"> {
@@ -67,7 +67,7 @@ export interface missionDoc extends Omit<missionDocuments, "id" | "createdAt" | 
                 defaultValue: null
             }
         }, {
-        sequelize:database,
+        sequelize,
         tableName: "missionDocuments",
         timestamps: true,
         paranoid: false

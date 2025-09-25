@@ -1,5 +1,5 @@
     import { User } from "../database/models/users";
-import { UserService } from "../services/userSercives";
+import { UserService } from "../services/userService";
 
     jest.mock("../database/models/users", () => ({
         User: {

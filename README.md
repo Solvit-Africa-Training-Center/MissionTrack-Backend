@@ -82,7 +82,7 @@ example:
 
 Environment Configuration
 
-NODE_ENV=DEV
+ENV=DEV
 
 PORT=5000
 

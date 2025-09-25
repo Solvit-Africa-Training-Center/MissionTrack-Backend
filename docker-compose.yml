@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
+      - ENV=development
       - development_USERNAME=postgres
       - development_DATABASE=mission_management_dev
       - development_PASSWORD=password

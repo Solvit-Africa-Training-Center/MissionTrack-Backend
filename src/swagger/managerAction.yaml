@@ -1,11 +1,9 @@
 
-tags:
-  - name:  Managers Mission Actions
-    description: Operations related to Managers Mission Actions
-
 paths:
   /actions/create:
     post:
+      security:
+        - bearerAuth: []  
       tags:
         - Managers Mission Actions
       summary: Create a new mission action
@@ -24,11 +22,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/MissionActionResponse'
         '400':
-          description: Bad request - invalid input data
+          $ref: '#/components/responses/BadRequest'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
+
   /actions:
     get:
+      security:
+        - bearerAuth: []   # 🔒 require JWT
       tags:
         - Managers Mission Actions
       summary: Get all Managers Mission Actions
@@ -43,10 +44,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/MissionActionResponse'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
 
   /actions/{missionId}:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - Managers Mission Actions
       summary: Get actions by mission ID
@@ -69,12 +72,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/MissionActionResponse'
         '404':
-          description: Mission not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
 
   /actions/action/{actionId}:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - Managers Mission Actions
       summary: Get action by ID
@@ -95,11 +100,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/MissionActionResponse'
         '404':
-          description: Action not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
 
     patch:
+      security:
+        - bearerAuth: []
       tags:
         - Managers Mission Actions
       summary: Update a mission action
@@ -126,10 +133,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/MissionActionResponse'
         '404':
-          description: Action not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
+
     delete:
+      security:
+        - bearerAuth: []
       tags:
         - Managers Mission Actions
       summary: Delete a mission action
@@ -146,11 +156,17 @@ paths:
         '200':
           description: Mission action deleted successfully
         '404':
-          description: Action not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT   # 👈 tells Swagger UI it’s a JWT token
+
   schemas:
     CreateMissionAction:
       type: object
@@ -163,21 +179,17 @@ components:
           type: string
           format: uuid
           description: ID of the mission
-          example: "123e4567-e89b-12d3-a456-426614174000"
         actorId:
           type: string
           format: uuid
           description: ID of the user performing the action
-          example: "123e4567-e89b-12d3-a456-426614174001"
         action:
           type: string
           enum: [Approve, Reject, Update, Cancel]
           description: Type of action being performed
-          example: "Approve"
         comment:
           type: string
           description: Optional comment for the action
-          example: "Approved for client meeting"
 
     UpdateMissionAction:
       type: object
@@ -185,12 +197,8 @@ components:
         action:
           type: string
           enum: [Approve, Reject, Update, Cancel]
-          description: Type of action being performed
-          example: "Reject"
         comment:
           type: string
-          description: Optional comment for the action
-          example: "Budget exceeded"
 
     MissionActionResponse:
       type: object
@@ -198,26 +206,20 @@ components:
         id:
           type: string
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174002"
         actorId:
           type: string
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174001"
         action:
           type: string
           enum: [Approve, Reject, Update, Cancel]
-          example: "Approve"
         comment:
           type: string
-          example: "Approved for client meeting"
         createdAt:
           type: string
           format: date-time
-          example: "2023-05-15T10:30:00Z"
         updatedAt:
           type: string
           format: date-time
-          example: "2023-05-15T10:30:00Z"
         mission:
           $ref: '#/components/schemas/MissionDetails'
         actor:

@@ -1,13 +1,11 @@
 
-tags:
-  - name: ExpenseLogs
-    description: Operations related to daily expense logs
-
 paths:
   /expenselog:
     post:
+      security:
+        - bearerAuth: []
       tags:
-        - ExpenseLogs
+        - Expense Logs
       summary: Create a new expense log
       description: Create a new expense log with accommodation, meals, and transport receipts
       requestBody:
@@ -74,8 +72,10 @@ paths:
 
   /expenselogs:
     get:
+      security:
+        - bearerAuth: []
       tags:
-        - ExpenseLogs
+        - Expense Logs
       summary: Get all expense logs
       responses:
         '200':
@@ -91,11 +91,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-
   /expenselog/{id}:
     get:
+      security:
+        - bearerAuth: []
       tags:
-        - ExpenseLogs
+        - Expense Logs
       summary: Get an expense log by ID
       parameters:
         - name: id
@@ -126,8 +127,10 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
     patch:
+      security:
+        - bearerAuth: []
       tags:
-        - ExpenseLogs
+        - Expense Logs
       summary: Update an expense log by ID
       parameters:
         - name: id
@@ -160,7 +163,6 @@ paths:
                   type: string
                   description: Updated description of expenses
                   example: "Updated expense description"
-                
       responses:
         '200':
           description: Expense log updated successfully
@@ -182,8 +184,10 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
     delete:
+      security:
+        - bearerAuth: []
       tags:
-        - ExpenseLogs
+        - Expense Logs
       summary: Delete an expense log by ID
       parameters:
         - name: id
@@ -213,11 +217,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-
   /expenselogs/mission/{missionId}:
     get:
+      security:
+        - bearerAuth: []
       tags:
-        - ExpenseLogs
+        - Expense Logs
       summary: Get expense logs by mission ID
       parameters:
         - name: missionId
@@ -242,6 +247,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     ExpenseLog:
       type: object
@@ -336,4 +347,3 @@ components:
           example: 500
         data:
           type: null
-

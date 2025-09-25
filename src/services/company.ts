@@ -24,7 +24,10 @@ export class CompanyService{
   static  async updateCompany(companyId:string,data:Partial<CompanyAttributes>){
         const company=await Company.findByPk(companyId);
         if(!company)throw new Error('Company not Found');
-        await company.update(data);
+            const updateData = Object.fromEntries(
+            Object.entries(data).filter(([_, value]) => value !== '' && value !== null && value !== undefined)
+        );
+        await company.update(updateData);
         return company;
     }
 

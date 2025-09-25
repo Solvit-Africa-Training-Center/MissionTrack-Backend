@@ -1,5 +1,5 @@
-import { Sequelize, Model, DataTypes } from "sequelize";
-import { database } from "..";
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "..";
 
 
 interface userAttributes {
@@ -12,6 +12,8 @@ interface userAttributes {
     companyId: string;
     role?: string;
     is_active?: boolean;
+    resetToken?:string;
+    resetTokenExpiry?:Date;
     createdAt?: Date;
     updatedAt?: Date;
     deletedAt?: Date | null;
@@ -25,6 +27,7 @@ export interface userCreationAttributes extends Omit<userAttributes, "id" | "cre
 
  class User extends Model<userAttributes, userCreationAttributes> implements userAttributes {
     static hashPassword: any;
+   company: any;
     static find(arg0: (user: any) => boolean) {
         throw new Error("Method not implemented.");
     }
@@ -36,6 +39,8 @@ export interface userCreationAttributes extends Omit<userAttributes, "id" | "cre
     public companyId!: string;
     public role!: string;
     public is_active?: boolean | undefined;
+    public resetToken?:string| undefined;
+    public resetTokenExpiry?:Date| undefined;
     public department?: string | undefined;
     public createdAt?: Date;
     public updatedAt?: Date;
@@ -65,6 +70,15 @@ User.init(
             primaryKey: true,
             allowNull: false,
         },
+         companyId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: 'companies',
+                key: "id"
+            }
+        },
+
         fullName: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -88,14 +102,7 @@ User.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
-        companyId: {
-            type: DataTypes.UUID,
-            allowNull: false,
-            references: {
-                model: 'companies',
-                key: "id"
-            }
-        },
+       
         role: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -105,6 +112,14 @@ User.init(
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true,
+        },
+        resetToken:{
+            type:DataTypes.STRING,
+            allowNull:true
+        },
+        resetTokenExpiry:{
+            type:DataTypes.DATE,
+            allowNull:true
         },
         createdAt: {
             type: DataTypes.DATE,
@@ -122,7 +137,7 @@ User.init(
         }
     },
     {
-        sequelize: database,
+        sequelize,
         tableName: "users",
         paranoid: false,
         timestamps: true,

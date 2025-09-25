@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as userController from "../controllers/userController";
-import { UserService } from "../services/userSercives";
+import { UserService } from "../services/userService";
 import { User } from "../database/models/users";
 
 jest.mock("../services/userSercives", () => ({

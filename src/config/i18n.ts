@@ -7,7 +7,7 @@ i18n.configure({
     directory:path.join(__dirname,'../locales'),
     objectNotation:true,
     updateFiles:false,
-    autoReload:process.env.NODE_ENV!=='production',
+    autoReload:process.env.ENV!=='production',
     queryParameter: 'lang',
     cookie:'locale',
 })

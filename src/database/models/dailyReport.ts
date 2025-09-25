@@ -1,6 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { database } from '..';
-
+import { sequelize } from "..";
 interface DailyReportAttributes {
   id: string;
   userId:string;
@@ -58,6 +57,7 @@ DailyReport.init(
     date: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue:DataTypes.NOW
     },
     dailyActivity: {
       type: DataTypes.TEXT,
@@ -91,7 +91,7 @@ DailyReport.init(
     },
   },
   {
-    sequelize:database,
+    sequelize,
     tableName: 'dailyReports', 
     modelName: 'dailyReports',
     paranoid: false,

@@ -34,7 +34,8 @@ module.exports = {
       },
       date:{
         type:Sequelize.DATE,
-        allowNull:false
+        allowNull:false,
+        defaultValue:Sequelize.NOW
       },
       dailyActivity:{
         type:Sequelize.TEXT,

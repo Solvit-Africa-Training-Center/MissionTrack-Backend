@@ -1,11 +1,13 @@
-# Daily Reports API Documentation
-tags:
-  - name: Daily Reports
-    description: Operations related to daily mission reports
+openapi: 3.0.3
+info:
+  title: Daily Reports API
+  version: 1.0.0
 
 paths:
   /reports/:
     post:
+      security:
+        - bearerAuth: []
       tags:
         - Daily Reports
       summary: Create a new daily report
@@ -57,6 +59,8 @@ paths:
           description: Internal server error
 
     get:
+      security:
+        - bearerAuth: []
       tags:
         - Daily Reports
       summary: Get all daily reports
@@ -75,6 +79,8 @@ paths:
 
   /reports/mission/{missionId}:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - Daily Reports
       summary: Get daily reports by mission ID
@@ -104,6 +110,8 @@ paths:
 
   /reports/{id}:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - Daily Reports
       summary: Get a specific daily report
@@ -130,6 +138,8 @@ paths:
           description: Internal server error
 
     patch:
+      security:
+        - bearerAuth: []
       tags:
         - Daily Reports
       summary: Update a daily report
@@ -182,6 +192,8 @@ paths:
           description: Internal server error
 
     delete:
+      security:
+        - bearerAuth: []
       tags:
         - Daily Reports
       summary: Delete a daily report
@@ -217,6 +229,12 @@ paths:
           description: Internal server error
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     DailyReport:
       type: object

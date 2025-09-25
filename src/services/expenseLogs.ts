@@ -1,10 +1,18 @@
 import ExpenseLog from "../database/models/expenseLogs";
+import { Mission } from "../database/models/mission";
 import { ExpenseLogCreate, ExpenseLogUpdate, IExpenseLog } from "../types/expenseLogs";
 
 
 export class ExpenseLogService {
 
     static async createExpenseLog(data: ExpenseLogCreate) {
+          const mission = await Mission.findByPk(data.missionId);
+          if (!mission) {
+        throw new Error('Mission not found');
+          }
+   if (mission.userId !== data.userId) { 
+        throw new Error('You are not authorized to create a expense report for this mission');
+    }
         const Elog = await ExpenseLog.create(data);
         return Elog;
     }

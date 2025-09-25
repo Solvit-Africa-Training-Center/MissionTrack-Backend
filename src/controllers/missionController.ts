@@ -119,9 +119,17 @@ export class MissionController {
         }
     }
     static async updateMission(req: Request, res: Response): Promise<Response> {
-        const updateData = req.body;
-        const { id } = req.params;
+      
         try {
+              const updateData = req.body;
+            const { id } = req.params;
+            if(req.files){
+                  const documents = Array.isArray(req.files) ? req.files : [req.files];
+                updateData.documents = documents.map(file => ({
+                documentName: file.originalname,
+                documentUrl: file.path
+            }));
+        }
             const missionFound = await Mission.findByPk(id);
             if (!missionFound) {
                 return ResponseService({

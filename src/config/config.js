@@ -1,25 +1,42 @@
-/* eslint-disable no-undef */
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const dotenv = require('dotenv');
 dotenv.config();
+
 const getPrefix = () => {
-  let env = process.env.NODE_ENV;
-  if (!env) {
-    return (env = 'DEV');
-  }
-  return env;
+  let env = process.env.ENV;
+  if (!env) return 'DEV';
+  return env.toUpperCase();
 };
 
 const databaseConfig = () => {
   const env = getPrefix();
+
+  if (env === "PROD" && process.env.DATABASE_URL) {
+    return {
+      use_env_variable: 'DATABASE_URL',
+      url: process.env.DATABASE_URL,
+      dialect: 'postgres',
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false, 
+        },
+      },
+    };
+  }
+
+  
   return {
     username: process.env[`${env}_USERNAME`] || '',
     database: process.env[`${env}_DATABASE`] || '',
     password: process.env[`${env}_PASSWORD`] || '',
     host: process.env[`${env}_HOST`] || '',
-    port: process.env[`${env}_PORT`] || 5432,
+    port: Number(process.env[`${env}_PORT`] || 5432),
     dialect: 'postgres',
   };
 };
 
-module.exports = databaseConfig;
+module.exports = {
+  DEV: databaseConfig(),
+  PROD: databaseConfig(),
+  TEST: databaseConfig(),
+};

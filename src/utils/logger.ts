@@ -70,7 +70,7 @@ const combinedFileTransport = new winston.transports.DailyRotateFile({
 winston.addColors(customLevels.colors);
 const logger = winston.createLogger({
   levels: customLevels.levels,
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.ENV === 'production' ? 'info' : 'debug',
   transports: [consoleTransport, errorFileTransport, combinedFileTransport],
   exitOnError: false,
 });

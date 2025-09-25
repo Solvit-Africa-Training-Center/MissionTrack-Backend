@@ -32,13 +32,14 @@ async updateMission(id: string, payload: MissionUpdatePayload){
             await MissDoc.destroy({ where: { missionId: id } });
 
             if (payload.documents.length > 0) {
-                for (const doc of payload.documents) {
-                    await MissDoc.create({
-                        missionId: id,
-                        documentName: doc.documentName,
-                        documentUrl: doc.documentUrl
-                    });
-                }
+                  const documentPromises = payload.documents.map(doc => 
+                MissDoc.create({
+                    missionId: id,
+                    documentName: doc.documentName,
+                    documentUrl: doc.documentUrl
+                })
+            );
+            await Promise.all(documentPromises);
             }
         }
         

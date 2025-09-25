@@ -1,5 +1,5 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
-import { database } from "..";
+import { sequelize } from "..";
 
 interface MissionActionAttributes {
     id: string;
@@ -71,7 +71,7 @@ MissionAction.init({
     }
 }, {
     tableName: "missionActions",
-    sequelize: database,
+    sequelize,
     paranoid: false,
     timestamps: true,
     modelName: "missionAction"

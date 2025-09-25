@@ -3,6 +3,8 @@ paths:
     get:
       summary: Get all users
       tags: [Users]
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: List of all users
@@ -15,6 +17,8 @@ paths:
     post:
       summary: Create a new user
       tags: [Users]
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -33,6 +37,8 @@ paths:
     get:
       summary: Get a user by ID
       tags: [Users]
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -51,8 +57,10 @@ paths:
           description: User not found
 
     patch:
-      summary: Update a user
+      summary: Update a user (admin/manager)
       tags: [Users]
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -77,6 +85,8 @@ paths:
     delete:
       summary: Delete a user
       tags: [Users]
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -90,7 +100,38 @@ paths:
         "404":
           description: User not found
 
+  /users/profile:
+    patch:
+      summary: Update employee profile (self-update)
+      description: Allows an **employee** to update their own profile. The logged-in user's ID is used, no need to provide it in the path.
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Employee profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "403":
+          description: Forbidden - user cannot update other profiles
+        "404":
+          description: User not found
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     User:
       type: object
@@ -126,10 +167,10 @@ components:
         updatedAt:
           type: string
           format: date-time
+
     UserInput:
       type: object
-      required: 
-        - companyId
+      required:
         - fullName
         - email
         - password
@@ -158,25 +199,19 @@ components:
           example: "IT"
         role:
           type: string
-          enum: 
+          enum:
             - admin
             - employee
             - manager
             - finance_manager
           example: "employee"
+
     UserUpdate:
       type: object
       properties:
         fullName:
           type: string
           example: Updated John
-        email:
-          type: string
-          format: email
-          example: updated@example.com
-        phoneNumber:
-          type: string
-          example: "0712345678"
         department:
           type: string
           example: Sales
@@ -184,7 +219,22 @@ components:
           type: string
           enum: [admin, employee, manager, finance_manager]
           example: manager
-        is_active:
-          type: boolean
-          example: false
 
+    UserProfileUpdate:
+      type: object
+      description: Schema for employee profile updates - supports file upload
+      properties:
+        profilePhoto:
+          type: string
+          format: binary
+          description: Upload profile photo
+        fullName:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        phoneNumber:
+          type: string
+          example: "0788888888"
