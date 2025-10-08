@@ -6,10 +6,10 @@ import { secretkey } from "../utils/helper";
 interface UserPayload extends JwtPayload {
   id: string;
   email: string;
-  role:string; 
+  role: "admin" | "manager" | "employee" | "finance_manager" | string;
 }
 
-export const checkRoleMiddleware = (allowedRoles: string[]) => {
+export const checkRoleMiddleware = (allowedRoles: UserPayload["role"][]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization;
@@ -36,7 +36,7 @@ export const checkRoleMiddleware = (allowedRoles: string[]) => {
       }
       const decoded = jwt.verify(token, secretkey) as unknown as UserPayload;
 
-      console.log("Token 😉 :", decoded);
+      // console.log("Token 😉 :", decoded);
 
       if (!allowedRoles.includes(decoded.role)) {
         return ResponseService({

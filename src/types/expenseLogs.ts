@@ -1,16 +1,3 @@
-export interface IExpenseLog {
-  id?: string;
-  missionId: string;
-  userId:string;
-  date: Date;
-  accommodationFile?: string | null;
-  mealsFile?: string | null;
-  transportFile?: string | null;
-  description?: string | null;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
-}
 
 export interface ExpenseLogCreate {
   userId:string;
@@ -20,6 +7,12 @@ export interface ExpenseLogCreate {
   mealsFile?: string | null;
   transportFile?: string | null;
   description?: string | null;
+  accommodationAmount?:number;
+  mealsAmount?:number;
+  transportAmount?:number;
+  totalAmount?:number;
+  status:"pending" | "accepted" | "rejected";
+  statusChangeComment?: string | null;
 }
 
 export interface ExpenseLogUpdate {
@@ -29,4 +22,10 @@ export interface ExpenseLogUpdate {
   mealsFile?: string | null;
   transportFile?: string | null;
   description?: string | null;
+  accommodationAmount?:number;
+  mealsAmount?:number;
+  transportAmount?:number;
+  totalAmount?:number;
+  status?:"pending" | "accepted" | "rejected";
+  statusChangeComment?: string | null;
 }

@@ -31,7 +31,7 @@ module.exports = {
         province: "Eastern",
         district: "Rwamagana",
         sector: "Karenge",
-        state: "inactive",
+        state: "trial",
         blockUnblockComment: "Blocked due to inactivity",
         status: "pending",
         approveComment: null,

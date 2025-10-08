@@ -1,14 +1,13 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "..";
 import { CompanyAttributes } from "../../types/companyInterface";
-import { User } from "./users";
 
 interface CompanyCreationAttributes extends Omit<CompanyAttributes, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class Company extends Model<CompanyAttributes, CompanyCreationAttributes> implements CompanyAttributes {
     public id!: string;
     public email!: string;
-    public state!: 'active' | 'inactive';
+    public state!: 'active' | 'trial'|'blocked';
     public status!: 'pending' | 'approved' | 'rejected';
     public proofDocument!: string;
     public approveComment!: string;
@@ -20,6 +19,7 @@ class Company extends Model<CompanyAttributes, CompanyCreationAttributes> implem
     public companyName!: string;
     public companyEmail!: string;
     public companyContact!: string;
+    public profileLogo!: string | null;
 
 }
 
@@ -60,10 +60,14 @@ Company.init({
         type: DataTypes.STRING,
         allowNull: false
     },
+    profileLogo:{
+        type:DataTypes.STRING,
+        allowNull:true
+    },
     state: {
-        type: DataTypes.ENUM('active', 'inactive'),
+        type: DataTypes.ENUM('active', 'trial','blocked'),
         allowNull: false,
-        defaultValue: "active"
+        defaultValue: "trial"
     },
     blockUnblockComment:{
         type:DataTypes.TEXT,

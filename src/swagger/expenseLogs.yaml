@@ -7,7 +7,9 @@ paths:
       tags:
         - Expense Logs
       summary: Create a new expense log
-      description: Create a new expense log with accommodation, meals, and transport receipts
+      description: |
+        Create a new expense log. This endpoint accepts multipart/form-data allowing file uploads for accommodation, meals and transport receipts.
+        Note: route is protected by authentication and role-based middleware in the server (see implementation for role checks).
       requestBody:
         required: true
         content:
@@ -17,13 +19,7 @@ paths:
               required:
                 - missionId
                 - date
-                - userId
               properties:
-                userId:
-                  type: string
-                  format: uuid
-                  description: ID of the user creating the expense log
-                  example: "550e8400-e29b-41d4-a716-446655440000"
                 missionId:
                   type: string
                   format: uuid
@@ -37,15 +33,15 @@ paths:
                 accommodationFile:
                   type: string
                   format: binary
-                  description: Upload accommodation receipt file
+                  description: Upload accommodation receipt file (PDF or image)
                 mealsFile:
                   type: string
                   format: binary
-                  description: Upload meals receipt file
+                  description: Upload meals receipt file (PDF or image)
                 transportFile:
                   type: string
                   format: binary
-                  description: Upload transport receipt file
+                  description: Upload transport receipt file (PDF or image)
                 description:
                   type: string
                   description: Additional description of expenses
@@ -59,6 +55,12 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -77,6 +79,7 @@ paths:
       tags:
         - Expense Logs
       summary: Get all expense logs
+      description: Retrieve all expense logs. The actual results may be filtered by authenticated user's role on the server side.
       responses:
         '200':
           description: All expense logs retrieved successfully
@@ -84,6 +87,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
           content:
@@ -92,20 +101,20 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
   /expenselog/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Expense log ID
+        schema:
+          type: string
+          format: uuid
     get:
       security:
         - bearerAuth: []
       tags:
         - Expense Logs
       summary: Get an expense log by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Expense log ID
-          schema:
-            type: string
-            format: uuid
       responses:
         '200':
           description: Expense log retrieved successfully
@@ -115,6 +124,12 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '404':
           description: Expense log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -132,14 +147,7 @@ paths:
       tags:
         - Expense Logs
       summary: Update an expense log by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Expense log ID
-          schema:
-            type: string
-            format: uuid
+      description: Update fields and/or files for a given expense log. Accepts multipart/form-data. Only the provided fields will be updated.
       requestBody:
         required: true
         content:
@@ -163,6 +171,7 @@ paths:
                   type: string
                   description: Updated description of expenses
                   example: "Updated expense description"
+               
       responses:
         '200':
           description: Expense log updated successfully
@@ -172,6 +181,12 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '404':
           description: Expense log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -189,14 +204,6 @@ paths:
       tags:
         - Expense Logs
       summary: Delete an expense log by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Expense log ID
-          schema:
-            type: string
-            format: uuid
       responses:
         '200':
           description: Expense log deleted successfully
@@ -206,6 +213,12 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '404':
           description: Expense log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -239,6 +252,83 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /expenselog/status/{id}:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Expense Logs
+      summary: Change the status of an expense log
+      description: Only users with financial manager role should be allowed to call this endpoint on the server-side (middleware enforces this).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Expense log ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [pending, accepted, rejected]
+                  description: New status for the expense log
+                statusChangeComment:
+                  type: string
+                  description: Optional comment explaining the status change
+                  example: "Receipt missing signature"
+      responses:
+        '200':
+          description: Expense Log status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden (insufficient role)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Expense log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
           content:
@@ -261,41 +351,38 @@ components:
           type: string
           format: uuid
           example: "550e8400-e29b-41d4-a716-446655440000"
-        userId:
-          type: string
-          format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
+       
         missionId:
           type: string
           format: uuid
           example: "550e8400-e29b-41d4-a716-446655440000"
-        accommodationCost:
+        accommodationAmount:
           type: number
           format: float
           example: 150.00
-        mealsCost:
+        mealsAmount:
           type: number
           format: float
           example: 45.50
-        transportCost:
+        transportAmount:
           type: number
           format: float
           example: 25.00
-        totalCost:
+        totalAmount:
           type: number
           format: float
           example: 220.50
         accommodationFile:
           type: string
-          example: "/uploads/expense-logs/accommodation-receipt-123.pdf"
+          example: "/uploads/expense-logs/accommodation/accommodation-receipt-123.pdf"
           description: Path to accommodation receipt file
         mealsFile:
           type: string
-          example: "/uploads/expense-logs/meals-receipt-456.pdf"
+          example: "/uploads/expense-logs/meals/meals-receipt-456.pdf"
           description: Path to meals receipt file
         transportFile:
           type: string
-          example: "/uploads/expense-logs/transport-receipt-789.pdf"
+          example: "/uploads/expense-logs/transport/transport-receipt-789.pdf"
           description: Path to transport receipt file
         description:
           type: string
@@ -304,6 +391,14 @@ components:
           type: string
           format: date
           example: "2024-01-15"
+        status:
+          type: string
+          enum: [pending, accepted, rejected]
+          example: pending
+        statusChangeComment:
+          type: string
+          nullable: true
+          example: null
         createdAt:
           type: string
           format: date-time

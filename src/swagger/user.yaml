@@ -139,9 +139,7 @@ components:
         id:
           type: string
           example: af4357d9-72a9-45d7-a288-4fcfbb59fc9a
-        companyId:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
+      
         fullName:
           type: string
           example: John Doe
@@ -156,7 +154,7 @@ components:
           example: IT
         role:
           type: string
-          enum: [admin, employee, manager, finance_manager]
+          enum: [employee, finance_manager]
           example: employee
         is_active:
           type: boolean
@@ -175,11 +173,9 @@ components:
         - email
         - password
         - role
+        - bankAccount
       properties:
-        companyId:
-          type: string
-          example: "123e4567-e89b-12d3-a456-426614174000"
-          description: Company ID that the user belongs to
+        
         fullName:
           type: string
           example: "John Doe"
@@ -197,12 +193,13 @@ components:
         department:
           type: string
           example: "IT"
+        bankAccount:
+          type: string
+          example: "263632762762"
         role:
           type: string
           enum:
-            - admin
             - employee
-            - manager
             - finance_manager
           example: "employee"
 
@@ -217,7 +214,7 @@ components:
           example: Sales
         role:
           type: string
-          enum: [admin, employee, manager, finance_manager]
+          enum: [employee, finance_manager]
           example: manager
 
     UserProfileUpdate:

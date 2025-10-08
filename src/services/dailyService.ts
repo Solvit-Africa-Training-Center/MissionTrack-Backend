@@ -1,14 +1,20 @@
 
 import DailyReport from "../database/models/dailyReport";
 import { Mission } from "../database/models/mission";
+import { User } from "../database/models/users";
 import { DailyReportCreate, DailyReportUpdate } from "../types/mDailReport";
 
 export class DailyReportService {
-    async createDailyReport(data: DailyReportCreate) {
+    async createDailyReport(userId:string,data: DailyReportCreate) {
+
+        const user = await User.findByPk(userId);
+        if(!user) throw new Error("User not found");
+
          const mission = await Mission.findByPk(data.missionId);
          if(!mission) throw new Error ("Misson not found");
-         if(mission.userId!==data.userId) throw new Error("You are not own of the mission");
-         const report = await DailyReport.create(data);
+
+         if(mission.userId!==userId) throw new Error("You are not own of the mission");
+         const report = await DailyReport.create({...data,userId});
          return report;
 
     }

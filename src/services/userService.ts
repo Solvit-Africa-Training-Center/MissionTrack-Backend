@@ -1,37 +1,35 @@
 
 import { User } from "../database/models/users"; 
 import bcrypt from "bcrypt";
-import { AddUserInterface, userInterface, userUpateInterface } from "../types/userInterface";
+import { AddUserInterface,  userAttributes,  userUpateInterface } from "../types/userInterface";
 import { Op } from "sequelize";
 
 export class UserService {
-    static async createUser(userData: AddUserInterface): Promise<userInterface> {
-            const hashedPassword=await bcrypt.hash(userData.password,10);
-            const user = await User.create({...userData,password:hashedPassword});
-            return user.toJSON() as userInterface;
+    static async createUser(userData: AddUserInterface): Promise<userAttributes> {
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
+            const newUser = await User.create({ ...userData, password: hashedPassword });
+            return newUser.toJSON() as userAttributes;
     }
 
-    static async getUserById(id: string): Promise<userInterface> {
-            const user = await User.findByPk(id);
+    static async getUserById(id: string,companyId:string): Promise<userAttributes> {
+            const user = await User.findOne({ where: { id, companyId } });
             if (!user) {
                 throw new Error(`User with id ${id} not found`);
             }
-            return user.toJSON() as userInterface;
+            return user.toJSON() as userAttributes;
     }
-    static async getAllUsers(): Promise<userInterface[]> {
-            const users = await User.findAll({    where: {
+    static async getAllUsers(companyId:string): Promise<userAttributes[]> {
+            const users = await User.findAll({where: {
+            companyId,
             role: { [Op.ne]: "admin" } 
         }});
-            return users.map(user => user.toJSON() as userInterface);
+            return users.map(user => user.toJSON() as userAttributes);
     }
-   static async updateUser(id: string, updateData: Partial<userUpateInterface>): Promise<userUpateInterface> {
-    const user = await User.findByPk(id);
+   static async updateUser(id: string, companyId:string, updateData: Partial<userUpateInterface>): Promise<userUpateInterface> {
+    const user = await User.findOne({ where: { id, companyId } });
 
     if (!user) {
         throw new Error(`User with id ${id} not found`);
-    }
-    if (user.role === "admin") {
-        throw new Error("Admin user cannot be updated");
     }
 
     await user.update(updateData);
@@ -39,13 +37,10 @@ export class UserService {
 }
 // update user profile
 
-static async deleteUser(id: string): Promise<number> {
-    const user = await User.findByPk(id);
+static async deleteUser(id: string,companyId:string): Promise<number> {
+    const user = await User.findOne({ where: { id, companyId } });
     if (!user) {
         throw new Error(`User with id ${id} not found`);
-    }
-    if (user.role === "admin") {
-        throw new Error("Admin user cannot be deleted");
     }
     await user.destroy();
     return 1;

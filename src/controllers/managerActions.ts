@@ -2,13 +2,23 @@ import MissionActionService from "../services/managerMissionActions";
 import { Request,Response } from "express";
 import { CreateMissionActionParams, UpdateMissionActionParams } from "../types/managerMissionActions";
 import { ResponseService } from "../utils/response";
+import { AuthRequest } from "../utils/helper";
 
 const missionActionService = new MissionActionService();
 
-export const createMissionAction = async (req: Request, res: Response) => {
+export const createMissionAction = async (req: AuthRequest, res: Response) => {
     const params: CreateMissionActionParams = req.body;
     try {
-        const result = await missionActionService.createActionAndUpdateMission(params);
+        if (!req.user || !req.user.id) {
+            return ResponseService({
+                res,
+                data: null,
+                success: false,
+                message: "User not authenticated",
+                status: 401
+            });
+        }
+        const result = await missionActionService.createActionAndUpdateMission(params, req.user.id);
         return ResponseService
         ({
             res,
@@ -29,11 +39,11 @@ export const createMissionAction = async (req: Request, res: Response) => {
     }
 };
 
-export const updateMissionAction = async (req: Request, res: Response) => {
+export const FinanceUpdateMissionAction = async (req: Request, res: Response) => {
     const actionId: string = req.params.actionId;
     const params: UpdateMissionActionParams = req.body;
     try {
-        const result = await missionActionService.updateAction(actionId, params);
+        const result = await missionActionService.financeManagerUpdateAction(actionId, params);
         return ResponseService({
             res,
             data:result,
@@ -50,6 +60,7 @@ export const updateMissionAction = async (req: Request, res: Response) => {
             message:"Failed to update"
         })
     }};
+
 export const getActionByMissionId = async (req: Request, res: Response) => {
     const missionId: string = req.params.missionId;
     try {

@@ -44,7 +44,7 @@ paths:
                 proofDocument:
                   type: string
                   format: binary
-                  description: "Company proof document file upload (PDF, DOC, DOCX, JPG, PNG - Max 10MB)"
+                  description: "Company proof document file upload"
                 companyContact:
                   type: string
                   example: "+250788123456"
@@ -70,9 +70,6 @@ paths:
                 phoneNumber:
                   type: string
                   example: "0788888888"
-            encoding:
-              proofDocument:
-                contentType: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/jpeg, image/png
       responses:
         "201":
           description: Company and manager created successfully
@@ -80,151 +77,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CompanyResponse"
-        "400":
-          description: Bad request - validation errors
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /company/get:
-    get:
-      summary: Get the logged-in company details
-      tags: [Company]
-      security:
-        - bearerAuth: []
-      responses:
-        "200":
-          description: Company retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompanyResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Company not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /company/update:
-    put:
-      summary: Update the logged-in company (with optional proofDocument upload)
-      tags: [Company]
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                companyName:
-                  type: string
-                  example: "Updated Tech Solutions Ltd"
-                companyEmail:
-                  type: string
-                  format: email
-                  example: "newemail@techsolutions.com"
-                proofDocument:
-                  type: string
-                  format: binary
-                  description: "Updated proof document"
-                companyContact:
-                  type: string
-                  example: "+250788654321"
-                province:
-                  type: string
-                  example: "Northern Province"
-                district:
-                  type: string
-                  example: "Musanze"
-                sector:
-                  type: string
-                  example: "IT Services"
-            encoding:
-              proofDocument:
-                contentType: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/jpeg, image/png
-      responses:
-        "200":
-          description: Company updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompanyResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Company not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /company/delete:
-    delete:
-      summary: Delete the logged-in company
-      tags: [Company]
-      security:
-        - bearerAuth: []
-      responses:
-        "200":
-          description: Company deleted successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SuccessResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Company not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
 
   /company/allCompanies:
     get:
-      summary: Get all companies
+      summary: Get all companies (admin only)
       tags: [Company]
       security:
         - bearerAuth: []
@@ -238,123 +94,14 @@ paths:
                 properties:
                   success:
                     type: boolean
-                    example: true
                   message:
                     type: string
-                    example: "All companies fetched successfully"
                   status:
                     type: integer
-                    example: 200
                   data:
                     type: array
                     items:
                       $ref: "#/components/schemas/Company"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /company/block:
-    patch:
-      summary: Block or unblock the logged-in company
-      tags: [Company]
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                state:
-                  type: string
-                  enum: [active, blocked, trial]
-                  example: "trial"
-                comment:
-                  type: string
-                  example: "Violation of terms"
-      responses:
-        "200":
-          description: Company state updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompanyResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Company not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /company/approveReject:
-    patch:
-      summary: Approve or reject the logged-in company
-      tags: [Company]
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - status
-              properties:
-                status:
-                  type: string
-                  enum: [approved, rejected]
-                  example: "approved"
-                comment:
-                  type: string
-                  example: "All documents verified"
-      responses:
-        "200":
-          description: Company approval status updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompanyResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Company not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
 
   /company/profile:
     patch:
@@ -375,26 +122,16 @@ paths:
                   description: "Company logo image"
                 companyName:
                   type: string
-                  example: "Profile Updated Tech Solutions Ltd"
                 companyEmail:
                   type: string
-                  format: email
-                  example: "profileupdate@techsolutions.com"
                 companyContact:
                   type: string
-                  example: "+250788999888"
                 province:
                   type: string
-                  example: "Eastern Province"
                 district:
                   type: string
-                  example: "Rwamagana"
                 sector:
                   type: string
-                  example: "Agriculture"
-            encoding:
-              companyLogo:
-                contentType: image/jpeg, image/png
       responses:
         "200":
           description: Company profile updated successfully
@@ -402,24 +139,158 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CompanyResponse"
-        "401":
-          description: Unauthorized
+
+  /company/{companyId}:
+    get:
+      summary: Get company by ID (admin only)
+      tags: [Company]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Company retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Company not found
+                $ref: "#/components/schemas/CompanyResponse"
+
+    put:
+      summary: Update a company by ID (admin only)
+      tags: [Company]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                companyName:
+                  type: string
+                companyEmail:
+                  type: string
+                proofDocument:
+                  type: string
+                  format: binary
+                  description: "Updated proof document"
+                companyContact:
+                  type: string
+                province:
+                  type: string
+                district:
+                  type: string
+                sector:
+                  type: string
+      responses:
+        "200":
+          description: Company updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
+                $ref: "#/components/schemas/CompanyResponse"
+
+    delete:
+      summary: Delete a company by ID (admin only)
+      tags: [Company]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Company deleted successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /company/block/{companyId}:
+    patch:
+      summary: Block or unblock a company (admin only)
+      tags: [Company]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum: [active, blocked, trial]
+                comment:
+                  type: string
+      responses:
+        "200":
+          description: Company state updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
+
+  /company/approveReject/{companyId}:
+    patch:
+      summary: Approve or reject a company (admin only)
+      tags: [Company]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [approved, rejected]
+                comment:
+                  type: string
+      responses:
+        "200":
+          description: Company approval status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyResponse"
 
 components:
   securitySchemes:
@@ -455,12 +326,10 @@ components:
           nullable: true
         province:
           type: string
-          nullable: true
         district:
           type: string
         sector:
           type: string
-          nullable: true
         approveComment:
           type: string
           nullable: true
@@ -498,13 +367,10 @@ components:
       properties:
         success:
           type: boolean
-          example: true
         message:
           type: string
-          example: "Company deleted successfully"
         status:
           type: integer
-          example: 200
         data:
           type: "null"
 
@@ -513,12 +379,9 @@ components:
       properties:
         success:
           type: boolean
-          example: false
         message:
           type: string
-          example: "Internal server error"
         status:
           type: integer
-          example: 500
         data:
           type: "null"

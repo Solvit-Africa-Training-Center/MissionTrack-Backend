@@ -2,19 +2,30 @@ import { Request, response, Response } from "express";
 import { MissionService } from "../services/mission";
 import { ResponseService } from "../utils/response";
 import { Mission } from "../database/models/mission";
+import { AuthRequest } from "../utils/helper";
 
 
 const missionService = new MissionService();
 export class MissionController {
-    static async createMission(req: Request, res: Response): Promise<Response> {
+    static async createMission(req: AuthRequest, res: Response): Promise<Response> {
         try {
+               if (!req.user || !req.user.id) {
+            return ResponseService({
+                res,
+                data: null,
+                success: false,
+                message: "User not authenticated",
+                status: 401
+            });
+        }
             const missionData = req.body;
             const parsedData = {
                 id: missionData.id, 
-                userId: missionData.userId,
+                userId: req.user.id,
                 missionTitle: missionData.missionTitle,
-                fullName: missionData.fullName,
+                fullName: req.user.fullName,
                 startDate: missionData.startDate,
+                companyId:  req.user.companyId,
                 endDate: missionData.endDate,
                 missionDescription: missionData.missionDescription,
                 location: missionData.location,
@@ -64,9 +75,48 @@ export class MissionController {
     }
 
 
-    static async getAllMissions(req: Request, res: Response): Promise<Response> {
+    static async getAllMissionsbyEmployee(req: AuthRequest, res: Response): Promise<Response> {
         try {
-            const missions = await missionService.getAllMissions();
+            if (!req.user || !req.user.id) {
+                return ResponseService({
+                    res,
+                    data: null,
+                    success: false,
+                    message: "User not authenticated",
+                    status: 401
+                });
+            }
+            const missions = await missionService.getAllMissionsbyEmployee(req.user.id);
+            return ResponseService({
+                res,
+                data: missions,
+                success: true,
+                message: "All missions retrieved",
+                status: 200
+            })
+        } catch (error) {
+            const { message, stack } = error as Error;
+            return ResponseService({
+                data: stack,
+                status: 500,
+                success: false,
+                message: message,
+                res
+            })
+        }
+    }
+  static async getAllMissionsByManager(req: AuthRequest, res: Response): Promise<Response> {
+        try {
+            if (!req.user || !req.user.companyId) {
+                return ResponseService({
+                    res,
+                    data: null,
+                    success: false,
+                    message: "User not authenticated",
+                    status: 401
+                });
+            }
+            const missions = await missionService.getAllMissionsByManager(req.user.companyId);
             return ResponseService({
                 res,
                 data: missions,
@@ -86,6 +136,36 @@ export class MissionController {
         }
     }
 
+ static async getAllMissionsByFinance_manager(req: AuthRequest, res: Response): Promise<Response> {
+        try {
+            if (!req.user || !req.user.companyId) {
+                return ResponseService({
+                    res,
+                    data: null,
+                    success: false,
+                    message: "User not authenticated",
+                    status: 401
+                });
+            }
+            const missions = await missionService.getAllMissionsByFinance_manager(req.user.companyId);
+            return ResponseService({
+                res,
+                data: missions,
+                success: true,
+                message: "All missions retrieved",
+                status: 200
+            })
+        } catch (error) {
+            const { message, stack } = error as Error;
+            return ResponseService({
+                data: stack,
+                status: 500,
+                success: false,
+                message: message,
+                res
+            })
+        }
+    }
     static async getSingleMissionById(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
         try {

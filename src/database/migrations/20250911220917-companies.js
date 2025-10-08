@@ -44,14 +44,18 @@ module.exports = {
         type:Sequelize.STRING,
         allowNull:false
       },
+      profileLogo:{
+        type:Sequelize.STRING,
+        allowNull:true
+      },
         proofDocument:{
         type:Sequelize.STRING,
         allowNull:false
       },
       state:{
-        type:Sequelize.ENUM('active','inactive'),
+        type:Sequelize.ENUM('active','trial','blocked'),
         allowNull:false,
-        defaultValue:"active"
+        defaultValue:"trial"
       },
       blockUnblockComment:{
         type:Sequelize.TEXT,

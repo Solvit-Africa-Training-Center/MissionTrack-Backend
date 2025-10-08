@@ -10,6 +10,12 @@ interface ExpenseLogAttributes {
   mealsFile: string | null;
   transportFile: string | null;
   description: string | null;
+  accommodationAmount?:number;
+  mealsAmount?:number;
+  transportAmount?:number;
+  totalAmount?:number;
+  status:"pending" | "accepted" | "rejected";
+  statusChangeComment: string | null;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
@@ -26,6 +32,12 @@ class ExpenseLog extends Model<ExpenseLogAttributes, ExpenseLogCreationAttribute
   public mealsFile!: string | null;
   public transportFile!: string | null;
   public description!: string | null;
+  public accommodationAmount!:number;
+  public mealsAmount!:number;
+  public transportAmount!:number;
+  public totalAmount!:number;
+  public status!: "pending" | "accepted" | "rejected";
+  public statusChangeComment!: string | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date | null;
@@ -74,6 +86,36 @@ ExpenseLog.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+      accommodationAmount:{
+      type: DataTypes.FLOAT,
+      allowNull:true,
+      defaultValue:0
+    },
+    mealsAmount:{
+      type: DataTypes.FLOAT,
+      allowNull:true,
+      defaultValue:0
+    },
+    transportAmount:{
+      type: DataTypes.FLOAT,
+      allowNull:true,
+      defaultValue:0
+    },
+    totalAmount:{
+      type:DataTypes.FLOAT,
+      allowNull:true,
+      defaultValue:0
+    },
+    status:{
+      type:DataTypes.ENUM('pending','accepted','rejected'),
+      allowNull:false,
+      defaultValue:'pending'
+    },
+    statusChangeComment:{
+      type:DataTypes.TEXT,
+      allowNull:true,
+      defaultValue:null
     },
     createdAt: {
       type: DataTypes.DATE,

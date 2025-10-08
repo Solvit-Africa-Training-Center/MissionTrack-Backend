@@ -5,7 +5,6 @@ import {ChangePasswordData,ForgotPasswordPayload,ResetPassPayload} from "../type
 import jwt from "jsonwebtoken";
 import { redisClient } from "../utils/redisClient";
 import {Company} from "../database/models/company";
-
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 dotenv.config();
@@ -17,7 +16,7 @@ export class AuthServices {
    * Authenticate user login
    */
    static async login(email:string,password:string) {
-     const user = await database.User.findOne({ where: { email },include:[{model:Company,as:'company',attributes:['id','status','state']}] });
+    const user = await database.User.findOne({ where: { email },include:[{model:Company,as:'company',attributes:['id','status','state']}] });
     if (!user) {
       throw new Error("Invalid credentials");
     }
@@ -26,7 +25,7 @@ export class AuthServices {
     if (!isValidPassword) {
       throw new Error("Invalid credentials");
     }
-const companyStatus = user.company? user.company.status : null;
+    const companyStatus = user.company ? user.company.status : null;
  const token = jwt.sign(
   {
     id: user.id.toString(),
@@ -35,6 +34,10 @@ const companyStatus = user.company? user.company.status : null;
     email: user.email,
     companyId: user.companyId,
     companyStatus: companyStatus,
+    phoneNumber:user.phoneNumber,
+    bankAccount:user.bankAccount,
+    department:user.department,
+    profilePhoto:user.profilePhoto
   },
   JWT_SECRET,
   { expiresIn: "1d" }
@@ -94,8 +97,5 @@ const companyStatus = user.company? user.company.status : null;
     catch(error){
       throw new Error("Invalid or expired token");
     }
-
   }
-
-
  }

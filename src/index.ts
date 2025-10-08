@@ -14,7 +14,7 @@ config();
 const app = express();
 app.use(express.json());
 // app.use(i18n.init);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 
 app.get('/', (req, res) => {

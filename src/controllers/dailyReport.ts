@@ -2,19 +2,31 @@ import { Request, Response } from "express";
 import { dailyReportService } from "../services/dailyService";
 import { DailyReportCreate, DailyReportUpdate } from "../types/mDailReport";
 import { ResponseService } from "../utils/response";
+import { AuthRequest } from "../utils/helper";
 
 export class DailyReportController {
-    async createDailyReport(req: Request, res: Response) {
+    async createDailyReport(req: AuthRequest, res: Response) {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return ResponseService({
+                    res,
+                    status: 400,
+                    success: false,
+                    message: "User ID is required",
+                    data: null
+                });
+            }
             const reportData: DailyReportCreate = {
                 ...req.body,
+                userId: userId,
                 missionId: req.body.missionId,
             }
             if (req.file) {
                 reportData.filePath = req.file.path;
                 reportData.documents = req.file.filename;
             }
-            const newReport = await dailyReportService.createDailyReport(reportData);
+            const newReport = await dailyReportService.createDailyReport(userId, reportData);
 
             return ResponseService({
                 res,

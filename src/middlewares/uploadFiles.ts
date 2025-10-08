@@ -33,7 +33,7 @@ export const uploadCompanyProof = multer({
 });
 
 export const uploadCompanyLogo = multer({
-  storage: makeStorage("company-proofs"),
+  storage: makeStorage("company-logos"),
   limits: { fileSize: 10 * 1024 * 1024 } 
 });
 

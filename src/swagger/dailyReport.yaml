@@ -18,12 +18,7 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              properties:
-                userId:
-                  type: string
-                  format: uuid
-                  description: UUID of the user creating the report
-                  example: "550e8400-e29b-41d4-a716-446655440000"
+              properties:                
                 missionId:
                   type: string
                   format: uuid

@@ -1,13 +1,16 @@
-
+openapi: 3.0.3
+info:
+  title: Managers Mission Actions API
+  version: 1.0.0
 paths:
   /actions/create:
     post:
       security:
-        - bearerAuth: []  
+        - bearerAuth: []
       tags:
         - Managers Mission Actions
       summary: Create a new mission action
-      description: Create a new action (approval, rejection, update, or cancellation) for a mission
+      description: Create a new action (approval, rejection, update, cancellation, or complete) for a mission
       requestBody:
         required: true
         content:
@@ -23,13 +26,15 @@ paths:
                 $ref: '#/components/schemas/MissionActionResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
   /actions:
     get:
       security:
-        - bearerAuth: []   # 🔒 require JWT
+        - bearerAuth: []
       tags:
         - Managers Mission Actions
       summary: Get all Managers Mission Actions
@@ -43,6 +48,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MissionActionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -71,6 +78,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MissionActionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -99,6 +108,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MissionActionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -109,8 +120,8 @@ paths:
         - bearerAuth: []
       tags:
         - Managers Mission Actions
-      summary: Update a mission action
-      description: Update an existing mission action
+      summary: Finance manager updates a mission action
+      description: Update an existing mission action (finance manager only)
       parameters:
         - name: actionId
           in: path
@@ -132,6 +143,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MissionActionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -155,6 +168,8 @@ paths:
       responses:
         '200':
           description: Mission action deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -165,27 +180,22 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT   # 👈 tells Swagger UI it’s a JWT token
+      bearerFormat: JWT
 
   schemas:
     CreateMissionAction:
       type: object
       required:
         - missionId
-        - actorId
         - action
       properties:
         missionId:
           type: string
           format: uuid
           description: ID of the mission
-        actorId:
-          type: string
-          format: uuid
-          description: ID of the user performing the action
         action:
           type: string
-          enum: [Approve, Reject, Update, Cancel]
+          enum: [Approve, Reject, Update, Cancel, Complete]
           description: Type of action being performed
         comment:
           type: string
@@ -196,9 +206,19 @@ components:
       properties:
         action:
           type: string
-          enum: [Approve, Reject, Update, Cancel]
+          enum: [Approve, Reject, Update, Cancel, Complete]
+        accommodationAmount:
+          type: number
+          description: Optional accommodation amount
+        transportAmount:
+          type: number
+          description: Optional transport amount
+        dailyAllowanceAmount:
+          type: number
+          description: Optional daily allowance amount
         comment:
           type: string
+          description: Optional comment for the action
 
     MissionActionResponse:
       type: object
@@ -211,7 +231,7 @@ components:
           format: uuid
         action:
           type: string
-          enum: [Approve, Reject, Update, Cancel]
+          enum: [Approve, Reject, Update, Cancel, Complete]
         comment:
           type: string
         createdAt:
@@ -253,5 +273,7 @@ components:
       description: The specified resource was not found
     BadRequest:
       description: Bad request - invalid input data
+    Unauthorized:
+      description: Unauthorized - invalid or missing token / insufficient role
     InternalServerError:
       description: Internal server error

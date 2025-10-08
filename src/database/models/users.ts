@@ -1,33 +1,18 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes, Association } from "sequelize";
 import { sequelize } from "..";
+import { Company } from "./company";
+import { userAttributes } from "../../types/userInterface";
 
-
-interface userAttributes {
+export interface userCreationAttributes extends Omit<userAttributes,"id" | "createdAt" | "updatedAt" | "deletedAt" | "is_active" | "role"> {
     id?: string;
-    fullName: string;
-    email: string;
-    password: string;
-    phoneNumber?: string;
-    department?: string;
-    companyId: string;
-    role?: string;
-    is_active?: boolean;
-    resetToken?:string;
-    resetTokenExpiry?:Date;
-    createdAt?: Date;
-    updatedAt?: Date;
-    deletedAt?: Date | null;
-}
-
-export interface userCreationAttributes extends Omit<userAttributes, "id" | "createdAt" | "updatedAt"> {
-    id?: string;
+    role?:string
     createdAt?: Date;
     updatedAt?: Date;
 }
 
  class User extends Model<userAttributes, userCreationAttributes> implements userAttributes {
     static hashPassword: any;
-   company: any;
+//    company: any;
     static find(arg0: (user: any) => boolean) {
         throw new Error("Method not implemented.");
     }
@@ -37,8 +22,10 @@ export interface userCreationAttributes extends Omit<userAttributes, "id" | "cre
     public password!: string;
     public phoneNumber!: string | undefined;
     public companyId!: string;
-    public role!: string;
+    public role!: 'admin' | 'employee' | 'manager' | 'finance_manager';
     public is_active?: boolean | undefined;
+    public profilePhoto?:string| undefined;
+    public bankAccount?:string| undefined;
     public resetToken?:string| undefined;
     public resetTokenExpiry?:Date| undefined;
     public department?: string | undefined;
@@ -46,20 +33,12 @@ export interface userCreationAttributes extends Omit<userAttributes, "id" | "cre
     public updatedAt?: Date;
     public deletedAt?: null | undefined;
 
-
-    public toJSON(): object | userAttributes {
-        return {
-            id: this.id,
-            fullName: this.fullName,
-            email: this.email,
-            phoneNumber: this.phoneNumber,
-            department: this.department,
-            role: this.role,
-            is_active: this.is_active,
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt
-        };
-    }
+    
+    
+    public static associations: {
+    company: Association<User, Company>;
+  };
+    public company?: Company;
 }
 
 User.init(
@@ -105,13 +84,20 @@ User.init(
        
         role: {
             type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: "employee",
-        },
+            allowNull: false,     
+           },
         is_active: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true,
+        },
+        bankAccount:{
+            type:DataTypes.STRING,
+            allowNull:true
+        },
+        profilePhoto:{
+            type:DataTypes.STRING,
+            allowNull:true
         },
         resetToken:{
             type:DataTypes.STRING,

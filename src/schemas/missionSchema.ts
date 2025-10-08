@@ -6,6 +6,10 @@ export const addMissionSchema=joi.object({
     mission:joi.string().min(3).required(),
     missionDescription:joi.string().min(10).required(),
     location:joi.string().min(2).required(),
+    accommodationAmount:joi.string().min(1),
+    transportAmount:joi.string().min(1),
+    dailyAllowanceAmount:joi.string().min(1),
+    totalAmount:joi.string().min(1),
     jobPosition:joi.string().min(2).required(),
     startDate:joi.date().required(),
     endDate:joi.date().greater(joi.ref('startDate')).required()

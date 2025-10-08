@@ -1,4 +1,5 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -23,6 +24,10 @@ module.exports = {
           key:'id'
         }
       },
+      companyId:{
+        type:Sequelize.STRING,
+        allowNull:false
+      },
       fullName: {
         type: Sequelize.STRING,
         allowNull: false
@@ -42,6 +47,26 @@ module.exports = {
       location: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      accommodationAmount:{
+        type:Sequelize.FLOAT,
+        allowNull:true,
+        defaultValue:0
+      },
+      transportAmount:{
+        type:Sequelize.FLOAT,
+        allowNull:true,
+        defaultValue:0
+      },
+      dailyAllowanceAmount:{
+        type: Sequelize.FLOAT,
+        allowNull:true,
+        defaultValue:0
+      },
+      totalAmount:{
+        type:Sequelize.FLOAT,
+        allowNull:true,
+        defaultValue:0
       },
       startDate: {
         type: Sequelize.DATE,

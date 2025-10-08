@@ -8,7 +8,7 @@ import { MissDoc } from './models/missionDocuments';
 import { User } from './models/users';
 
 export const setupAssociations = () => {
-    Company.hasMany(User, {foreignKey: 'companyId',as: 'users',onDelete: 'CASCADE',onUpdate: 'CASCADE'});
+    Company.hasMany(User, { foreignKey: 'companyId', as: 'users', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
     User.belongsTo(Company, {
         foreignKey: 'companyId',
@@ -52,5 +52,10 @@ export const setupAssociations = () => {
     ExpenseLog.belongsTo(Mission, { foreignKey: "missionId", as: "mission", onDelete: "CASCADE", onUpdate: "CASCADE" });
     User.hasMany(ExpenseLog, { foreignKey: "userId", as: "expenses", onDelete: "CASCADE", onUpdate: "CASCADE" });
     ExpenseLog.belongsTo(User, { foreignKey: "userId", as: "user", onDelete: "CASCADE", onUpdate: "CASCADE" });
+
+    // user association to mission
+    User.hasMany(Mission, {foreignKey: "userId",as: "missions",onDelete: "CASCADE",onUpdate: "CASCADE"});
+    Mission.belongsTo(User, {foreignKey: "userId",as: "user",onDelete: "CASCADE",onUpdate: "CASCADE"});
+
 }
 

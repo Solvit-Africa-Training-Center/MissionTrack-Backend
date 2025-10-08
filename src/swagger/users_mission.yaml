@@ -1,38 +1,5 @@
 paths:
   /missions:
-    get:
-      summary: Get all missions
-      tags: [Missions]
-      security:
-        - bearerAuth: []
-      responses:
-        "200":
-          description: List of missions retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "All missions retrieved"
-                  status:
-                    type: integer
-                    example: 200
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Mission"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
     post:
       summary: Create a new mission with documents
       tags: [Missions]
@@ -45,26 +12,16 @@ paths:
             schema:
               type: object
               required:
-                - userId
                 - missionTitle
-                - fullName
                 - startDate
                 - endDate
                 - missionDescription
                 - location
                 - jobPosition
               properties:
-                userId:
-                  type: string
-                  format: uuid
-                  example: "550e8400-e29b-41d4-a716-446655440000"
-                  description: "ID of the user creating the mission"
                 missionTitle:
                   type: string
                   example: "Business Trip to Nairobi"
-                fullName:
-                  type: string
-                  example: "John Doe"
                 startDate:
                   type: string
                   format: date
@@ -112,6 +69,114 @@ paths:
                     $ref: "#/components/schemas/Mission"
         "400":
           description: Bad request - mission already exists or validation error
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /missions/employee:
+    get:
+      summary: Get all missions of the logged-in employee
+      tags: [Missions]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of employee's missions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "All missions retrieved"
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Mission"
+        "401":
+          description: Unauthorized - user not authenticated
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /missions/manager:
+    get:
+      summary: Get all missions under the logged-in manager's company
+      tags: [Missions]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of company's missions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "All missions retrieved"
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Mission"
+        "401":
+          description: Unauthorized - user not authenticated
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /missions/finance-manager:
+    get:
+      summary: Get all missions of the logged-in finance manager's company (only manager_approved)
+      tags: [Missions]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of company's missions retrieved successfully for finance manager
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "All manager_approved missions retrieved"
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Mission"
+        "401":
+          description: Unauthorized - user not authenticated
         "500":
           description: Internal server error
           content:
@@ -249,6 +314,12 @@ components:
           type: string
           format: uuid
           example: "550e8400-e29b-41d4-a716-446655440000"
+        userId:
+          type: string
+          format: uuid
+        companyId:
+          type: string
+          format: uuid
         fullName:
           type: string
           example: "John Doe"

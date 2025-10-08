@@ -10,6 +10,9 @@ export interface missionCreationAttributes extends Omit<missionInterfaces, "id" 
 }
 
  class Mission extends Model<missionInterfaces, missionCreationAttributes> implements missionInterfaces {
+    createdMission(arg0: { plain: true; }): Mission | PromiseLike<Mission> {
+      throw new Error("Method not implemented.");
+    }
     missionTitle!: string;
     fullName!: string;
     startDate!: Date;
@@ -17,7 +20,12 @@ export interface missionCreationAttributes extends Omit<missionInterfaces, "id" 
     missionDescription!: string;
     id!: string;
     userId!: string;
+    companyId!: string;
     location!: string;
+    accommodationAmount!: number;
+    transportAmount!: number;
+    dailyAllowanceAmount!: number;
+    totalAmount!: number;
     jobPosition!: string;
     status!: MissionStatus;
     createdAt!: Date;
@@ -35,6 +43,12 @@ export interface missionCreationAttributes extends Omit<missionInterfaces, "id" 
             startDate: this.startDate,
             endDate: this.endDate,
             jobPosition: this.jobPosition,
+            accomodationAmount: this.accommodationAmount,
+            transportAmount: this.transportAmount,
+            dailyAllowanceAmount: this.dailyAllowanceAmount,
+            totalAmount: this.totalAmount,
+            userId: this.userId,
+            companyId: this.companyId,
             status: this.status,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
@@ -58,6 +72,14 @@ export interface missionCreationAttributes extends Omit<missionInterfaces, "id" 
                     key:"id"
                 }
             },
+            companyId:{
+                type: DataTypes.UUID,
+                allowNull:false,
+                references:{
+                    model:"companies",
+                    key:"id"
+                }
+            },
             fullName: {
                 type: DataTypes.STRING,
                 allowNull: false
@@ -73,13 +95,33 @@ export interface missionCreationAttributes extends Omit<missionInterfaces, "id" 
             },
             location: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: true
             },
+            accommodationAmount: {
+                type: DataTypes.FLOAT,
+                allowNull: true
+            },
+                transportAmount: {
+                type: DataTypes.FLOAT,
+                allowNull: true
+            },
+                dailyAllowanceAmount: {
+                type: DataTypes.FLOAT,
+                allowNull: true
+            },
+                totalAmount: {
+                type: DataTypes.FLOAT,
+                allowNull: true
+                },
             jobPosition: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-
+             status: {
+                type: DataTypes.ENUM('pending', 'Approved', 'Rejected', 'Updated', 'Cancelled', 'Completed'),
+                defaultValue: 'pending',
+                allowNull: false
+            },
 
             startDate: {
                 type: DataTypes.DATE,
@@ -89,11 +131,7 @@ export interface missionCreationAttributes extends Omit<missionInterfaces, "id" 
                 type: DataTypes.DATE,
                 allowNull: false
             },
-            status: {
-                type: DataTypes.ENUM('pending', 'Approved', 'Rejected', 'Updated', 'Cancelled', 'Completed'),
-                defaultValue: 'pending',
-                allowNull: false
-            },
+          
             createdAt: {
                 type: DataTypes.DATE,
                 allowNull: false,
